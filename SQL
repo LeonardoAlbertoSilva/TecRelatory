@@ -1,0 +1,113 @@
+-- Criando Banco de Dados
+-- CREATE DATABASE TecRelatory
+
+-- Usando o Banco de Dados
+USE TecRelatory;
+
+-- Tabela Telefone
+CREATE TABLE Telefone (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	numero VARCHAR(15) NOT NULL
+);
+
+-- Tabela Email
+CREATE TABLE Email (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	email VARCHAR(50) NOT NULL
+);
+
+-- Tabela Estado
+CREATE TABLE Estado (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	nome VARCHAR(200) NOT NULL,
+    uf CHAR(5) NOT NULL
+);
+
+-- Tabela Cidade
+CREATE TABLE Cidade (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    id_estado INT NOT NULL,
+	nome VARCHAR(200) NOT NULL,
+    FOREIGN KEY (id_estado) REFERENCES Estado(id)
+);
+
+-- Tabela Endereço
+CREATE TABLE Endereco (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    id_cidade INT NOT NULL,
+	rua VARCHAR(200) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    FOREIGN KEY (id_cidade) REFERENCES Cidade(id)
+);
+
+-- Tabela Cliente
+CREATE TABLE Cliente (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+    cpf VARCHAR(11) NOT NULL,
+	id_endereço INT NOT NULL,
+    id_telefone INT NOT NULL,
+    id_email INT NOT NULL,
+    FOREIGN KEY (id_endereço) REFERENCES Endereco(id),
+    FOREIGN KEY (id_telefone) REFERENCES Telefone(id),
+    FOREIGN KEY (id_email) REFERENCES Email(id)
+);
+
+-- Tabela Material
+CREATE TABLE Material (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	descricao VARCHAR(200) NOT NULL,
+    quantidade DOUBLE NOT NULL,
+    valor DOUBLE
+);
+
+-- Tabela de Serviço 
+CREATE TABLE Servico (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    data_inicio DATE NOT NULL,
+    descricao_problema MEDIUMTEXT NOT NULL,
+    imagem_problema LONGBLOB,
+	data_fim DATE,
+    descricao_solucao MEDIUMTEXT,
+    imagem_solucao LONGBLOB,
+    id_material INT,
+    FOREIGN KEY (id_cliente) REFERENCES Cliente(id),
+    FOREIGN KEY (id_material) REFERENCES Material(id)
+);
+
+-- Tabela Telefone do Usuario
+CREATE TABLE Telefone_Usuario (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	numero VARCHAR(15) NOT NULL
+);
+
+-- Tabela Email do Usuario
+CREATE TABLE Email_Usuario (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	email VARCHAR(50) NOT NULL
+);
+
+-- Tabela Usuario
+CREATE TABLE Usuario (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+    cpf VARCHAR(11) NOT NULL,
+    id_telefone INT NOT NULL,
+    id_email INT NOT NULL,
+	login VARCHAR(30) NOT NULL,
+    senha VARCHAR(10) NOT NULL,
+    FOREIGN KEY (id_telefone) REFERENCES Telefone_Usuario(id),
+    FOREIGN KEY (id_email) REFERENCES Email_Usuario(id)
+);
+
+-- Tabela Executar o Serviço
+CREATE TABLE Executar_Servico (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_servico INT NOT NULL,
+	status VARCHAR(20) NOT NULL,	-- 'Concluido', 'Em andamento', 'Aberto', 'Cacelado'
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id),
+    FOREIGN KEY (id_servico) REFERENCES Servico(id)
+);
+
